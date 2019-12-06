@@ -6,11 +6,8 @@
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
-
    Skip to Step 3.
 */
-// /* Step 3: Create a function that accepts a single object as its only argument,
-//           Using DOM methods and properties, create a component that will return the following DOM element:
 
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
@@ -26,28 +23,40 @@
           user, and adding that card to the DOM.
 */
 
+
+
+// /* Step 3: Create a function that accepts a single object as its only argument,
+//           Using DOM methods and properties, create a component that will return the following DOM element:
+
+
+
 const entryPoint = document.querySelector('.cards');
-axios.get('https://api.github.com/users/maggieprice')
-.then (response=> {
+axios.get(`https://api.github.com/users/maggieprice`)
+.then (response => {
   console.log(response.data);
-  // console.log(response.data.message);
   const myGithubCard = gitCard(response.data);
   entryPoint.appendChild(myGithubCard);
-  // const cards = document.querySelector('.cards')
-  // const cardInfo = cardCreator(myInfo)
-  // cards.appendChild(cardInfo)
 })
 
-const followersArray = [];
+const followersArray = [
+  'thericktastic',
+  'debauchery1st',
+  'Nicci498',
+  'aalvinlin', 
+  'matthews7'
+];
 
-followersArray.forEach(user=>{
-  axios.get(`https://api.github.com/users/${user}`)
-  .then (data=>{
-    const card = cardCreator(data.data)
-    const cards = document.querySelector('.cards')
-    cards.appendChild(card)
+followersArray.forEach(user => {
+axios.get(`https://api.github.com/users/${user}`)
+  .then(data => {
+    const newCards = gitCard(data.data);
+    entryPoint.appendChild(newCards);
+  });
+})
+
+.catch(error => {
+    console.log(error);
   })
-})
 
 function gitCard(githubUsers){
   const newCard = document.createElement('div'),
@@ -62,32 +71,34 @@ function gitCard(githubUsers){
    cardFollowing = document.createElement('p'), 
    cardBio = document.createElement('p');
 
- cardImg.src="githubUsers.avatar_url";
- cardName.textContent = githubUsers.name; 
- cardUser.textContent = githubUsers.login;
- cardLocation.textContent = githubUsers.location;
- cardProfile.textContent = 'Profile:';
- cardLink.textContent = githubUsers.url;
- cardFollowers.textContent = githubUsers.followers;
- cardFollowing.textContent = githubUsers.following;
- cardBio.textContent = githubUsers.bio;
+    cardImg.src=githubUsers.avatar_url;
+    cardName.textContent = githubUsers.name; 
+    cardUser.textContent = githubUsers.login;
+    cardLocation.textContent = `Location: ${githubUsers.location}`;
+    cardProfile.textContent = 'Profile: ';
+    cardLink.textContent = githubUsers.url;
+    cardLink.href = githubUsers.html_url;
+    cardFollowers.textContent = `Followers: ${githubUsers.followers}`;
+    cardFollowing.textContent = `Following: ${githubUsers.following}`;
+    cardBio.textContent = `Bio: ${githubUsers.bio}`;
 
-  newCard.classList.add("card");
-  cardInfo2.classList.add("card-info");
-  cardName.classList.add("name");
-  cardUser.classList.add("username");
+    newCard.classList.add("card");
+    cardInfo2.classList.add("card-info");
+    cardName.classList.add("name");
+    cardUser.classList.add("username");
   
-  newCard.appendChild(cardImage);
-  newCard.appendChild(cardInfo);
-  cardInfo2.appendChild(cardName); 
-  cardInfo2.appendChild(cardUser); 
-  cardInfo2.appendChild(cardProfile); 
-  cardInfo2.appendChild(cardFollowers); 
-  cardInfo2.appendChild(cardFollowing); 
-  cardInfo2.appendChild(cardBio);
-  cardProfile.appendChild(cardLink);
+    newCard.appendChild(cardImg);
+    newCard.appendChild(cardInfo2);
+    cardInfo2.appendChild(cardName); 
+    cardInfo2.appendChild(cardUser); 
+    cardInfo2.appendChild(cardLocation); 
+    cardInfo2.appendChild(cardProfile); 
+    cardInfo2.appendChild(cardFollowers); 
+    cardInfo2.appendChild(cardFollowing); 
+    cardInfo2.appendChild(cardBio);
+    cardProfile.appendChild(cardLink);
   
-  return newCard;
+    return newCard;
     
 }
 
